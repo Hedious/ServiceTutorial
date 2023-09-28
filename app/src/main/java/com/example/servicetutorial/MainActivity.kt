@@ -26,12 +26,16 @@ import androidx.compose.ui.unit.dp
 import androidx.work.BackoffPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.servicetutorial.ui.theme.ServiceTutorialTheme
 import com.example.servicetutorial.worker.CustomWorker
 import com.example.servicetutorial.worker.DownloadWorker
+import com.example.servicetutorial.worker.PWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
@@ -48,7 +52,20 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             ServiceTutorialTheme {
-               
+
+                LaunchedEffect(key1 = Unit) {
+                    val workRequest = PeriodicWorkRequestBuilder<PWorker>(
+                        repeatInterval = 1,
+                        repeatIntervalTimeUnit = TimeUnit.HOURS
+                    ).setBackoffCriteria(
+                        BackoffPolicy.LINEAR,
+                        Duration.ofSeconds(15)
+                    ).build()
+
+                    val workManager = WorkManager.getInstance(applicationContext)
+                    workManager.enqueue(workRequest)
+                }
+
                 // A surface container using the 'background' color from the theme
 
                 Column(

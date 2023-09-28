@@ -10,7 +10,7 @@ import kotlinx.coroutines.delay
 class PWorker(context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
-        delay(10000)
+        delay(1000)
         Log.d("CustomWorker", "Success")
         return Result.success()
     }
